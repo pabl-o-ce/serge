@@ -24,15 +24,16 @@ cloud_provider = "<aws | do | gcp | hcloud>"
 cloud_provider = "<ubuntu | debian | rocky | rhel | fedora>"
 ```
 6. In the same file `terraform.tfvars` edit only the values of your cloud and distro you choose and erase the rest.
-6. Run `terraform init` to initialize the Terraform environment.
+7. On the directory `user-data` choose the `cloud-init` that is with the same name as your linux distro and change this parameters <username>, <hashed password> and <pub-key> with the ones you want to use.
+8. Run `terraform init` to initialize the Terraform environment.
 ```bash
 terraform init
 ```
-7. Run `terraform plan` to see what changes will be made.
+9. Run `terraform plan` to see what changes will be made.
 ```bash
 terraform plan
 ```
-8. Run `terraform apply` to apply the changes.
+10. Run `terraform apply` to apply the changes.
 ```bash
 terraform apply
 ```
