@@ -29,7 +29,7 @@ provider "aws" {
 }
 
 // Digital Ocean provider
-provider "do" {
+provider "digitalocean" {
   # Add Digital Ocean token
   token = var.do_token
 }
