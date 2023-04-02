@@ -1,0 +1,46 @@
+# cloud-config
+# https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+# Configure the instance
+# https://cloudinit.readthedocs.io/en/latest/topics/examples.html#configure-the-instance
+# https://cloudinit.readthedocs.io/en/latest/topics/modules.html#write-files
+fqdn: serge
+hostname: serge
+locale: en_US.UTF-8
+timezone: <timezone | Europe/Paris>
+package_update: true
+package_upgrade: true
+packages:
+  - firewalld
+  - curl
+users:
+  - name: <username>
+    gecos: serge
+    primary-group: <username>
+    lock_passwd: false
+    passwd: <hashed password>
+    groups: [wheel, systemd-journal]
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ssh-ed25519 <pub-key> <username>@serge
+runcmd:
+  # Install Docker
+  - dnf update --refresh -y
+  - dnf config-manager --set-enabled crb
+  - dnf config-manager --add-repo=https://download.docker.com/linux/fedora/docker-ce.repo
+  - dnf update --refresh -y
+  - dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  # Add user to docker group
+  - usermod -aG docker <username>
+  # Starting and enabling Docker
+  - systemctl start docker
+  - systemctl enable docker
+  # Starting Serge
+  - docker run -d -v weights:/usr/src/app/weights -v datadb:/data/db/ -p 8008:8008 ghcr.io/nsarrazin/serge:latest
+  # Firewalld
+  - systemctl start firewalld
+  - systemctl enable firewalld
+  # Firewalld open port 8008/tcp
+  - firewall-cmd --zone=public --add-port=8008/tcp --permanent
+  - firewall-cmd --reload

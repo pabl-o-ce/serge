@@ -1,0 +1,39 @@
+#####     Serge     #####
+# choose cloud provider [aws | do | gcp | hcloud]
+cloud_provider = "<aws | do | gcp | hcloud>"
+
+# choose image [ubuntu | debian | rocky | rhel | fedora]
+# also choose the same image on the cloud of your choice
+# to match with the cloud init setup
+cloud_provider = "<ubuntu | debian | rocky | rhel | fedora>"
+
+#####     AWS     #####
+aws_access_key = "<aws_access_key>"
+aws_secret_key = "<aws_secret_key>"
+aws_region = "<aws_region>"
+aws_image_serge = "<aws_image_serge>"
+aws_instance_type = "m7g.2xlarge"
+aws_key_name = "<key_pair>"
+aws_instance_volume_size = 100
+
+#####     DO     #####
+do_token = "<do_token>"
+do_region = "<do_region>"
+do_instance_type = "<do_instance_type>"
+do_image_serge = "<do_image_serge>"
+
+#####     GCP     #####
+gcp_project_id = "<gcp_project_id>"
+gcp_region = "<gcp_region>"
+gcp_zone = "<gcp_zone>"
+gcp_instance_type = "<gcp_instance_type>"
+gcp_image_serge = "<gcp_image_serge>"
+gcp_instance_volume_size = "100GB"
+
+#####     Hetzner - hcloud     #####
+hcloud_token = "<hcloud_token>"
+hcloud_region = "<hcloud_region>"
+hcloud_name = "<hcloud_name>"
+hcloud_instance_type = "<hcloud_instance_type>"
+hcloud_zone = "<hcloud_zone>"
+hcloud_image_serge = "<hcloud_image_serge>"

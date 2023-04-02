@@ -1,0 +1,50 @@
+# cloud-config
+# https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+# Configure the instance
+# https://cloudinit.readthedocs.io/en/latest/topics/examples.html#configure-the-instance
+# https://cloudinit.readthedocs.io/en/latest/topics/modules.html#write-files
+fqdn: serge
+hostname: serge
+locale: en_US.UTF-8
+timezone: <timezone | Europe/Paris>
+package_update: true
+package_upgrade: true
+packages:
+  - firewalld
+  - curl
+users:
+  - name: <username>
+    gecos: serge
+    primary-group: <username>
+    lock_passwd: false
+    passwd: <hashed password>
+    groups: [wheel, systemd-journal]
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ssh-ed25519 <pub-key> <username>@serge
+runcmd:
+  # Install Docker
+  - apt-get update
+  - apt-get install -y ca-certificates gnupg
+  # Add Docker's official GPG key
+  - mkdir -m 0755 -p /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  # Add Docker repository to APT sources
+  - echo "deb [arch="($dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null 
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  # Add user to docker group
+  - usermod -aG docker <username>
+  # Starting and enabling Docker
+  - systemctl start docker
+  - systemctl enable docker
+  # Starting Serge
+  - docker run -d -v weights:/usr/src/app/weights -v datadb:/data/db/ -p 8008:8008 ghcr.io/nsarrazin/serge:latest
+  # Firewalld
+  - systemctl start firewalld
+  - systemctl enable firewalld
+  # Firewalld open port 8008/tcp
+  - firewall-cmd --zone=public --add-port=8008/tcp --permanent
+  - firewall-cmd --reload
