@@ -37,6 +37,7 @@ terraform plan
 ```bash
 terraform apply
 ```
+11. Check the ip it generate `http://<ip>:8008`
 
 ## Cleanup
 When you are finished, run `terraform destroy` to destroy the resources.
